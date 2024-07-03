@@ -1,9 +1,9 @@
-// src/services/accountService.ts
-
 import { Account } from "../models/account";
+import { Transaction } from "../models/transaction";
 
 export class AccountService {
   private accounts: Account[] = [];
+  private transactions: Transaction[] = [];
 
   createAccount(owner: string, type: "savings" | "checking"): Account {
     const newAccount: Account = {
@@ -11,6 +11,7 @@ export class AccountService {
       owner,
       balance: 0,
       type,
+      transactions: [],
     };
     this.accounts.push(newAccount);
     return newAccount;
@@ -22,6 +23,12 @@ export class AccountService {
 
   getAllAccounts(): Account[] {
     return this.accounts;
+  }
+
+  getAccountTransactions(accountId: string): Transaction[] {
+    return this.transactions.filter(
+      (transaction) => transaction.accountId === accountId
+    );
   }
 
   deleteAccount(id: string): boolean {
@@ -37,6 +44,15 @@ export class AccountService {
     const account = this.getAccount(id);
     if (account && amount > 0) {
       account.balance += amount;
+      const transaction: Transaction = {
+        id: this.generateId(),
+        accountId: id,
+        type: "deposit",
+        amount,
+        date: new Date(),
+      };
+      account.transactions.push(transaction);
+      this.transactions.push(transaction);
       return true;
     }
     return false;
@@ -46,6 +62,15 @@ export class AccountService {
     const account = this.getAccount(id);
     if (account && amount > 0 && account.balance >= amount) {
       account.balance -= amount;
+      const transaction: Transaction = {
+        id: this.generateId(),
+        accountId: id,
+        type: "withdrawal",
+        amount,
+        date: new Date(),
+      };
+      account.transactions.push(transaction);
+      this.transactions.push(transaction);
       return true;
     }
     return false;

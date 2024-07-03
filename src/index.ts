@@ -1,5 +1,3 @@
-// src/index.ts
-
 import { AccountService } from "./services/accountService";
 
 const accountService = new AccountService();
@@ -17,3 +15,7 @@ console.log("Updated Account:", accountService.getAccount(account.id));
 const withdrawSuccess = accountService.withdraw(account.id, 500);
 console.log("Withdraw Success:", withdrawSuccess);
 console.log("Updated Account:", accountService.getAccount(account.id));
+
+// Get transaction history
+const transactions = accountService.getAccountTransactions(account.id);
+console.log("Transaction History:", transactions);
