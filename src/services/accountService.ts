@@ -20,9 +20,22 @@ export class AccountService {
     return this.accounts.find((account) => account.id === id);
   }
 
+  getAllAccounts(): Account[] {
+    return this.accounts;
+  }
+
+  deleteAccount(id: string): boolean {
+    const index = this.accounts.findIndex((account) => account.id === id);
+    if (index !== -1) {
+      this.accounts.splice(index, 1);
+      return true;
+    }
+    return false;
+  }
+
   deposit(id: string, amount: number): boolean {
     const account = this.getAccount(id);
-    if (account) {
+    if (account && amount > 0) {
       account.balance += amount;
       return true;
     }
@@ -31,7 +44,7 @@ export class AccountService {
 
   withdraw(id: string, amount: number): boolean {
     const account = this.getAccount(id);
-    if (account && account.balance >= amount) {
+    if (account && amount > 0 && account.balance >= amount) {
       account.balance -= amount;
       return true;
     }
